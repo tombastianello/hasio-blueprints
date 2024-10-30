@@ -33,9 +33,7 @@ blueprint:
           max: 600
           unit_of_measurement: seconds
 
-# If motion is detected within the delay,
-# we restart the script.
-mode: restart
+mode: single
 max_exceeded: silent
 
 triggers:
