@@ -47,10 +47,6 @@ triggers:
     entity_id: !input occupancy_entity
     from: "off"
     to: "on"
-  - trigger: state
-    entity_id: !input occupancy_entity
-    from: "on"
-    to: "off"
 
 actions:
   - if:
@@ -69,6 +65,11 @@ actions:
       - action: light.turn_off
         target: !input light_target
     else:
+      - wait_for_trigger:
+          - trigger: state
+            entity_id: !input occupancy_entity
+            from: "on"
+            to: "off"
       - delay: !input no_motion_wait
       - action: light.turn_off
         target: !input light_target
