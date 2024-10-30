@@ -47,6 +47,10 @@ triggers:
     entity_id: !input occupancy_entity
     from: "off"
     to: "on"
+  - trigger: state
+    entity_id: !input light_target
+    from: "off"
+    to: "on"
 
 actions:
   - if:
