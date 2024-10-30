@@ -21,7 +21,7 @@ blueprint:
       name: Light
       selector:
         target:
-          entity:
+          device:
             domain: light
     no_motion_wait:
       name: Wait time
