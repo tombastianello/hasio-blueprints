@@ -33,7 +33,7 @@ blueprint:
           max: 600
           unit_of_measurement: seconds
 
-mode: single
+mode: restart
 max_exceeded: silent
 
 triggers:
