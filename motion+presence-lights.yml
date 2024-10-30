@@ -11,7 +11,7 @@ blueprint:
             device_class: motion
             domain: binary_sensor
     occupancy_entity:
-      name: Motion Sensor
+      name: Occupancy Sensor
       selector:
         entity:
           filter:
