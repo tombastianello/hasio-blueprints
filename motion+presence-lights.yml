@@ -48,7 +48,7 @@ triggers:
     from: "off"
     to: "on"
   - trigger: state
-    entity_id: !input light_target
+    !input light_target
     from: "off"
     to: "on"
 
