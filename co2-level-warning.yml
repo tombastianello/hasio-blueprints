@@ -1,0 +1,49 @@
+blueprint:
+  name: CO2 Level Warning
+  description: Turn on a light when motion is detected.
+  author: Tommaso Bastianello
+  domain: automation
+  input:
+    co2_entity:
+      name: CO2 Sensor
+      description: CO2 ppm level sensor, this will trigger the notification if above the threshold.
+      selector:
+        entity:
+          filter:
+            device_class: co2
+            domain: sensor
+    threshold:
+      name: CO2 Threshold
+      description: Threshold of CO2 in ppm that should trigger the notification.
+      default: 800
+      selector:
+        number:
+          min: 200
+          max: 1024
+          unit_of_measurement: ppm
+    room_name:
+      name: Room or Area Name
+      description: The name of the room or area where the sensor is, used to customise the notification.
+      default: ""
+
+mode: restart
+max_exceeded: silent
+
+variables:
+  raw: !input room_name
+
+triggers:
+  - trigger: numeric_state
+    entity_id:
+      - !input co2_entity
+    above: !input threshold
+conditions: []
+actions:
+  - action: notify.notify
+    metadata: {}
+    data:
+      title: Air Quality Alert ({{raw}})
+       message: >-
+        Air quality in the {{raw}} is very low, this may indicate something is
+        wrong.
+        
