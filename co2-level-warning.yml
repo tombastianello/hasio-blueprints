@@ -31,6 +31,7 @@ max_exceeded: silent
 
 variables:
   raw: !input room_name
+  ppm: !input threshold
 
 triggers:
   - trigger: numeric_state
@@ -43,7 +44,4 @@ actions:
     metadata: {}
     data:
       title: Air Quality Alert ({{raw}})
-       message: >-
-        Air quality in the {{raw}} is very low, this may indicate something is
-        wrong.
-        
+       message: CO₂ levels in the {{raw}} are above {{ppm}}.
