@@ -69,6 +69,7 @@ actions:
         target: 
           entity_id: !input light_target
     else:
+      - delay: !input 30
       - if:
         - condition: state
           entity_id: !input occupancy_entity
