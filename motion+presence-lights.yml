@@ -1,10 +1,12 @@
 blueprint:
   name: Presence Based Lights
   description: Turn on a light when motion is detected.
+  author: Tommaso Bastianello
   domain: automation
   input:
     motion_entity:
       name: Motion Sensor
+      description: Sensor used to detect motion, this is used together with the occupancy sensor to decide what should happen to the lights.
       selector:
         entity:
           filter:
@@ -12,20 +14,29 @@ blueprint:
             domain: binary_sensor
     occupancy_entity:
       name: Occupancy Sensor
+      description: Sensor used to detect occupancy, this is used together with the motion sensor to decide what should happen to the lights.
       selector:
         entity:
           filter:
             device_class: occupancy
             domain: binary_sensor
     light_target:
-      name: Light
+      name: Lights
+      description: One or more lights that should be controlled based on motion & presence.
       selector:
         entity:
           multiple: true
-          domain: light          
+          domain: light
+    has_activated:
+      name: Boolean Helper
+      description: A boolean helper used to track if the automation has triggered in it's current instance. This is used to track if the light "on" action has already been executed or not.
+      selector:
+        entity:
+          multiple: false
+          domain: input_boolean
     no_motion_wait:
-      name: Wait time
-      description: Time to leave the light on after last motion is detected.
+      name: Timeout (Seconds)
+      description: Time to leave the light on after last motion or occupancy is detected.
       default: 300
       selector:
         number:
@@ -33,7 +44,7 @@ blueprint:
           max: 600
           unit_of_measurement: seconds
 
-mode: single
+mode: restart
 max_exceeded: silent
 
 triggers:
@@ -51,41 +62,56 @@ triggers:
     to: "on"
 
 actions:
+  # Check if the automation has already triggered in this instance, and if motion or presence are detected.
   - if:
-      - condition: state
-        entity_id: !input occupancy_entity
-        state: "off"
-    then:
-      - service: light.turn_on
-        target: 
-          entity_id: !input light_target
-      - wait_for_trigger:
-          - trigger: state
-            entity_id: !input occupancy_entity
-            from: "on"
-            to: "off"
-      - delay: !input no_motion_wait
-      - service: light.turn_off
-        target: 
-          entity_id: !input light_target
-    else:
-      - delay: !input 30
-      - if:
-        - condition: state
-          entity_id: !input occupancy_entity
-          state: "off"
-        then:
-          - delay: !input no_motion_wait
-          - service: light.turn_off
-            target: 
-              entity_id: !input light_target
-        else:
-          - wait_for_trigger:
-              - trigger: state
+      - condition: and
+        conditions:
+          - condition: state
+            entity_id: !input has_activated
+            state: "off"
+          - condition: or
+            conditions:
+              - condition: state
                 entity_id: !input occupancy_entity
-                from: "on"
-                to: "off"
+                state: "on"
+              - condition: state
+                entity_id: !input motion_entity
+                state: "on"
+    # If it has not already been activated, do so, and turn on the lights.
+    then:
+      # Turn on the lights.
+      - service: light.turn_on
+        target:
+          entity_id: !input light_target
+
+        # Toggle the boolean helper to track that the automation has already run.
+      - action: input_boolean.turn_on
+        metadata: {}
+        data: {}
+        target:
+          entity_id: !input has_activated
+    else:
+      - if:
+          - condition: and
+            conditions:
+              - condition: state
+                entity_id: !input occupancy_entity
+                state: "off"
+              - condition: state
+                entity_id: !input motion_entity
+                state: "off"
+        then:
+          # Wait for the set time before turning things off.
           - delay: !input no_motion_wait
+
+          # Turn off the lights.
           - service: light.turn_off
-            target: 
+            target:
               entity_id: !input light_target
+
+          # Toggle the boolean helper to reset everything.
+          - action: input_boolean.turn_off
+            metadata: {}
+            data: {}
+            target:
+              entity_id: !input has_activated
