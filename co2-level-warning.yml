@@ -35,8 +35,7 @@ variables:
 
 triggers:
   - trigger: numeric_state
-    entity_id:
-      - !input co2_entity
+    entity_id: !input co2_entity
     above: !input threshold
 conditions: []
 actions:
