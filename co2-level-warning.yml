@@ -1,6 +1,6 @@
 blueprint:
   name: CO2 Level Warning
-  description: Turn on a light when motion is detected.
+  description: Send a notification when the CO2 levels are above a given threshold.
   author: Tommaso Bastianello
   domain: automation
   input:
