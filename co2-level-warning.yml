@@ -42,5 +42,5 @@ actions:
   - action: notify.notify
     metadata: {}
     data:
-      title: Air Quality Alert ({{raw}})
+      title: Air Quality Alert
       message: CO₂ levels in the {{raw}} are above {{ppm}}.
