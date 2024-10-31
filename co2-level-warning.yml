@@ -10,7 +10,7 @@ blueprint:
       selector:
         entity:
           filter:
-            device_class: co2
+            device_class: carbon_dioxide
             domain: sensor
     threshold:
       name: CO2 Threshold
