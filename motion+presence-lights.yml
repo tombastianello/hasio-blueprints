@@ -33,9 +33,8 @@ blueprint:
           max: 600
           unit_of_measurement: seconds
 
-mode: queued
+mode: single
 max_exceeded: silent
-max: 2
 
 triggers:
   - trigger: state
