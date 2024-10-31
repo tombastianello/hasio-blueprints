@@ -50,16 +50,10 @@ max_exceeded: silent
 triggers:
   - trigger: state
     entity_id: !input motion_entity
-    from: "off"
-    to: "on"
   - trigger: state
     entity_id: !input occupancy_entity
-    from: "off"
-    to: "on"
   - trigger: state
     entity_id: !input light_target
-    from: "off"
-    to: "on"
 
 actions:
   # Check if the automation has already triggered in this instance, and if motion or presence are detected.
