@@ -1,6 +1,6 @@
 blueprint:
-  name: Presence Based Lights
-  description: Turn on a light when motion is detected.
+  name: Presence Based Lights - Simple
+  description: Turn on a light when presence is detected.
   author: Tommaso Bastianello
   domain: automation
   input:
